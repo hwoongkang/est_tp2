@@ -21,3 +21,7 @@ Qd = Ad * C(1:4,5:8);
 
 
 %% part (a)
+[xTrue,t] = truetraj();
+
+% filtering
+xHat0 = [

@@ -1,4 +1,5 @@
 function a = acc(t)
+    t = t/60;
     a0 = 0.4/3600; % 0.4 km/min^2 -> km/s^2
     if t>=15 && t<17
         a = a0;
