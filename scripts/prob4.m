@@ -24,4 +24,4 @@ Qd = Ad * C(1:4,5:8);
 [xTrue,t] = truetraj();
 
 % filtering
-xHat0 = [
+% xHat0 = [
