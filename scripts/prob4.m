@@ -47,10 +47,71 @@ M = zeros(4,4,length(xTrue));
 getXWithW = @(W) getX(Ad,Qd,W,R,xTrue,z,x0,P0);
 getXWithW1AndW2 = @(W1,W2) getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0);
 
+err = 1E20;
+WAns = 0;
+f = waitbar(0,'W...');
+
+
+
+for W = 9E-4%1E-5:1E-5:1E-3
+    waitbar(W,f,sprintf("current best: %.3f^2",WAns));
+    x = getXWithW(W^2);
+    poserr = x([1,3],:) - xTrue;
+    errnow = trace(poserr.' * poserr) / length(x);
+    if errnow<err
+        err = errnow;
+        WAns = W;
+        bestXWithW = x;
+    end
+end
+
+close(f)
 x = getXWithW1AndW2(0.00025^2,0.0002^2);
 
+g = waitbar(0,'W1&W2...');
+
+W1Ans = 0;
+W2Ans = 0;
+err2 = 1E20;
+
+out = zeros(2,10000);
+parfor ww = 1:10000
+    W2 = (rem(ww,100))/100; % 0.1:0.1:1
+    W1 = ceil(ww/100)/100;
+    out(:,ww) = [W1;W2];
+    
+    x2 = getXWithW1AndW2(W1^2,W2^2);
+    poserr2 = x2([1,3],:) - xTrue;
+    errnow = trace(poserr2.' * poserr2)/length(x2);
+    if errnow<err2
+        bextXWithW1AndW2 = x2;
+        err = errnow;
+        W1Ans = W1;
+        W2Ans = W2;
+    end
+    
+end
+return
+parfor W1temp = 1:100
+    W1 = W1temp/100;
+    waitbar(W1,g,"");
+    
+    for W2 = 1E-2:1E-2:1
+        
+        x2 = getXWithW1AndW2(W1^2,W2^2);
+        poserr2 = x2([1,3],:) - xTrue;
+        errnow = trace(poserr2.' * poserr2)/length(x2);
+        if errnow<err2
+            bextXWithW1AndW2 = x2;
+            err = errnow;
+            W1Ans = W1;
+            W2Ans = W2;
+        end
+    end
+end
 
 
+close(g)
 function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
     % tuning parameter
     Qd = W*Qd;
@@ -69,8 +130,8 @@ function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
         H = zeros(2,4);
         H(:,[1,3]) = Htemp;
         
-        K = M(:,:,ind) * H.' * inv(H*M(:,:,ind) * H .' +R);
-        P(:,:,ind) = (eye(4) - K*H) * M(:,:,ind);
+        K = M * H.' * inv(H*M* H .' +R);
+        P(:,:,ind) = (eye(4) - K*H) * M;
         
         dx = K*dz;
         
