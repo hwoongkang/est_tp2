@@ -1,5 +1,5 @@
 %% prob 4.
-
+addpath("functions")
 %% discretization
 % continuous state matrix
 A = [0,1,0,0;
