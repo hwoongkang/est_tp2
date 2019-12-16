@@ -43,7 +43,7 @@ function [x,t,z] = truetraj(seed)
     theta = THETA0;
     
     x(:,1) = x0;
-    z(:,1) = x(:,1) + h(x0) + nu *randn(2,1);
+    z(:,1) = h(x0) + nu *randn(2,1);
     %% true traj 
     % iteration!
     for ind = 2:1:length(t)
@@ -57,14 +57,14 @@ function [x,t,z] = truetraj(seed)
         % to get a perfect circle trajectory
         omega = v / R0;
         
-        theta = theta + omega * dt;
+        theta = theta - omega * dt;
         
         % and update the pos
         x(:,ind) = Origin + R0 * [cos(theta);sin(theta)];
         % measurement
-        z(:,ind) = x(:,ind) + h(x(:,ind)) + nu*randn(2,1);
+        z(:,ind) = h(x(:,ind)) + nu*randn(2,1);
         % if returned
-        if (ind>64*60)&& (x(2,ind)>30)
+        if (ind>64*60)&& (theta > 2*pi)
             break
         end
     end
