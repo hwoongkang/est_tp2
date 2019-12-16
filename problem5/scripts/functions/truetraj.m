@@ -46,7 +46,7 @@ function [x,t,z,vTrue] = truetraj(seed)
     theta = THETA0;
     
     x(:,1) = x0;
-    v(:,1) = v;
+    vTrue(:,1) = v;
     z(:,1) = h(x0) + nu *randn(2,1);
     %% true traj 
     % iteration!
@@ -64,6 +64,7 @@ function [x,t,z,vTrue] = truetraj(seed)
         theta = theta + omega * dt;
         
         % and update the pos
+        vTrue(:,ind)=v;
         x(:,ind) = Origin + R0 * [cos(theta);-sin(theta)];
         % measurement
         z(:,ind) = h(x(:,ind)) + nu*randn(2,1);
@@ -76,4 +77,5 @@ function [x,t,z,vTrue] = truetraj(seed)
     t = t(1:ind);
     x = x(:,1:ind);
     z = z(:,1:ind);
+    vTrue=vTrue(:,1:ind);
 end

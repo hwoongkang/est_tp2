@@ -71,13 +71,13 @@ for W = [0.001^2,0.01^2, 0.02^2,0.03^2,0.05^2, 0.1^2 ,1^2 ] %[1E-5:1E-5:1E-3] %9
         bestXWithW = x;
     end
     
-    figure;
+    figure;sgtitle(sprintf("4(a) W=%.3f^2",sqrt(W)));
     for i=1:4
         for j=1:2
-            subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));title(sprintf("K(%d,%d), W=%.3f^2",i,j,sqrt(W)));
+            subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));title(sprintf("K(%d,%d)",i,j));
         end
     end
-    sgtitle('4(a) Kalman Gain');
+    
     figure;hold on; title(sprintf("4(a) Trajectory W=%.3f^2",sqrt(W)));
     plot(x(3,:),x(1,:)); plot(xTrue(2,:),xTrue(1,:));
     legend('est','true');
@@ -116,13 +116,14 @@ for W1 = [0.00001^2, 0.0228^2, 0.05^2, 0.1^2   ]%5.17*1E-4:1E-6:5.19*1E-4
             W1Ans = W1;
             W2Ans = W2;
         end
-        figure;
+        
+        figure;sgtitle(sprintf("4(b) Kalman Gain W1=%.5f^2 W2=%.5f^2",sqrt(W1),sqrt(W1)));
         for i=1:4
             for j=1:2
-                subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));title(sprintf("K(%d,%d), W1=%.3f^2 W2=%.3f^2",i,j,sqrt(W1),sqrt(W2)));
+                subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));title(sprintf("K(%d,%d)",i,j));
             end
         end
-        sgtitle('4(b) Kalman Gain');
+        
         figure;hold on; title(sprintf("4(b) Trajectory W1=%.5f^2 W2=%.5f^2",sqrt(W1),sqrt(W2)));
         plot(x(3,:),x(1,:)); plot(xTrue(2,:),xTrue(1,:));
         legend('est','true');
@@ -187,10 +188,17 @@ function [x,K_list] = getXK(Ad,Qd,W,R,xTrue,z,x0,P0)
     end
 end
 function x = getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0)
-    % tuning parameter
-    Qd = zeros(4);
-    Qd(2,2) = W1;
-    Qd(4,4) = W2;
+    % van loan again
+    A = [0,1,0,0;
+    0,0,0,0;
+    0,0,0,1;
+    0,0,0,0];
+    gamma = [0,0;1,0;0,0;0,1];
+    W = [W1,0;0,W2];
+    C = expm([-A,gamma * W * gamma.';zeros(4),A.']);
+    Ad = C(5:8,5:8).';
+    Qd = Ad * C(1:4,5:8);
+    
     x = zeros(4,length(xTrue));
     x(:,1) = x0;
     P = zeros(4,4,length(xTrue));
@@ -215,10 +223,17 @@ function x = getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0)
     end
 end
 function [x,K_list] = getXK2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0)
-    % tuning parameter
-    Qd = zeros(4);
-    Qd(2,2) = W1;
-    Qd(4,4) = W2;
+    % van loan again
+    A = [0,1,0,0;
+    0,0,0,0;
+    0,0,0,1;
+    0,0,0,0];
+    gamma = [0,0;1,0;0,0;0,1];
+    W = [W1,0;0,W2];
+    C = expm([-A,gamma * W * gamma.';zeros(4),A.']);
+    Ad = C(5:8,5:8).';
+    Qd = Ad * C(1:4,5:8);
+    
     x = zeros(4,length(xTrue));
     K_list= zeros(length(xTrue)-1,4,2);
     x(:,1) = x0;
