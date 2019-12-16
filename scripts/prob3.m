@@ -1,9 +1,9 @@
 close all; clear all;
 addpath('functions')
 
-%% Measurement
+%% //Measurement
 [true,time,meas] = truetraj();
-%% debug
+%% //debug
 figure();
 plot(true(2,:),true(1,:),'k');
 title('True Trajectory');
@@ -18,10 +18,10 @@ plot(meas(2,:),'k');
 title('psi2'); xlabel('sample'); ylabel('rad'); 
 grid on;
 sgtitle('measuremet');
-%% debug
+%% //debug
 
 
-%% Initial Condition
+%% //Initial Condition
 A = [0 0; 0 0];         % Continuous System Matrix
 Ts = 1;                 % Sampling Time
 F = eye(2) + A*Ts;      % Discretized System Matrix
@@ -30,7 +30,15 @@ W = 0.005;
 omega = wgn(2,2,W);
 xbar = [30; 30];
 
-%% Measurement update
+%% // estimation value
+xhat = xbar;
+/* M =  number 1 value*/
 
-%% Time update
-xhat = 
+%% //time update
+xbar_next = F * xhat + G;
+
+
+%% //Measurement update
+
+
+ 
