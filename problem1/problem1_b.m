@@ -11,6 +11,7 @@ x_est_before_NR=[15;23];
 invM_before_NR=diag([0^2,0^2]);
 %% simulation
 x_true=repmat([20;30],1,N);
+
 Zmea=zeros(2,N);
 for i=1:N
     Zmea(:,i)=h(x_true(:,i))+sqrt(V)*randn(2,1);
@@ -77,4 +78,5 @@ plot(abs(x_error(2,:)));hold on;
 plot(3*sqrt(cov_list(2,:)));
 xlabel('sec');ylabel('km');
 sgtitle('1(b) Kalman Filter');
+
 

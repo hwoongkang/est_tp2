@@ -68,9 +68,5 @@ xlabel('sec');ylabel('km');
 sgtitle('1(a) Newton Rhapson');
 
 
-    
-    
-
-
 
 
