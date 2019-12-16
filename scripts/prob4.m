@@ -21,7 +21,8 @@ Qd = Ad * C(1:4,5:8);
 
 
 %% part (a)
-[xTrue,t] = truetraj();
+[xTrue,t,z]= truetraj();
 
 % filtering
-xHat0 = [
+for ind = 1:length(xTrue)
+end

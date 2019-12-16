@@ -60,11 +60,11 @@ function [x,t,z] = truetraj(seed)
         theta = theta + omega * dt;
         
         % and update the pos
-        x(:,ind) = Origin + R0 * [cos(theta);sin(theta)];
+        x(:,ind) = Origin + R0 * [cos(theta);-sin(theta)];
         % measurement
         z(:,ind) = h(x(:,ind)) + nu*randn(2,1);
         % if returned
-        if (ind>64*60)&& (x(2,ind)>30)
+        if (ind>64*60)&& (theta>2*pi)
             break
         end
     end
