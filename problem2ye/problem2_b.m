@@ -14,7 +14,7 @@ invM_before_NR=diag([0^2,0^2]);
 
 %%
 [x_true,t,z] = truetraj();
-N=1000;%length(x_true);
+N=length(x_true);
 
 
 figure(1);
@@ -68,13 +68,13 @@ for i=1:N-1
     figure(1); hold on;
 %     f1=scatter(x_est_temp(2),x_est_temp(1),'b');hold on;
 %     f2=plot(x_true(2,1),x_true(1,1),'r*');
-    f3=plot(eli(2,:),eli(1,:),'b');
+%     f3=plot(eli(2,:),eli(1,:),'b');
     
 end
 
 f4=plot(waypoint(2,1),waypoint(1,1),'k^');
 f5=plot(waypoint(2,:),waypoint(1,:),'k');
-legend([f1,f3,f4,f5],'true','3\sigma','start','est','Location','Best');xlabel('y(km)');ylabel('x(km)');
+legend([f1,f4,f5],'true','start','est','Location','Best');xlabel('y(km)');ylabel('x(km)');
 title('2(b) Kalman Filter');
 axis equal
 
