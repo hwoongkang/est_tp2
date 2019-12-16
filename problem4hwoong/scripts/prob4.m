@@ -80,6 +80,7 @@ for W = [0.001^2,0.01^2, 0.02^2,0.03^2,0.05^2, 0.1^2 ,1^2 ] %[1E-5:1E-5:1E-3] %9
     sgtitle('4(a) Kalman Gain');
     figure;hold on; title(sprintf("4(a) Trajectory W=%.3f^2",sqrt(W)));
     plot(x(3,:),x(1,:)); plot(xTrue(2,:),xTrue(1,:));
+    legend('est','true');
 end
 fprintf("4(a) best Answer %f \n",WAns);
 
@@ -124,7 +125,7 @@ for W1 = [0.00001^2, 0.0228^2, 0.05^2, 0.1^2   ]%5.17*1E-4:1E-6:5.19*1E-4
         sgtitle('4(b) Kalman Gain');
         figure;hold on; title(sprintf("4(b) Trajectory W1=%.5f^2 W2=%.5f^2",sqrt(W1),sqrt(W2)));
         plot(x(3,:),x(1,:)); plot(xTrue(2,:),xTrue(1,:));
-        
+        legend('est','true');
     end
 end
 
