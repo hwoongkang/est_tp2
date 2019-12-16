@@ -1,0 +1,1 @@
+disp("solution for the prob. 1")
