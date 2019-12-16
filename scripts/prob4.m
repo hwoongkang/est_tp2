@@ -13,7 +13,7 @@ gamma = [0;1;0;1];
 % Gamma * W * Gamma^T
 Q = gamma * gamma.';
 
-% Van Loan's Discretization
+% Van Loan' Discretization
 C = expm([-A,Q;zeros(4), A.']);
 
 Ad = C(5:8,5:8).';
