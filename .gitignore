@@ -1,0 +1,14 @@
+# vscode settings
+.vscode/
+
+# autosave
+**/*.m~
+**/*.asv
+
+# binaries
+**/*.zip
+**/*.jpg
+**/*.png
+**/*.txt
+**/*.mat
+
