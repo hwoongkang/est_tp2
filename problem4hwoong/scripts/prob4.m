@@ -12,7 +12,7 @@ A = [0,1,0,0;
     0,0,0,1;
     0,0,0,0];
 
-% continuous Gamma Matrix (with Q_c = W)
+% continuous Gamma Matrix (with Q_c = W) Q_c=W=(km/s^2/sqrt(Hz))^2
 gamma = [0;1;0;1];
 
 % Gamma * W * Gamma^T
@@ -52,13 +52,15 @@ getXKWithW = @(W) getXK(Ad,Qd,W,R,xTrue,z,x0,P0);
 getXWithW1AndW2 = @(W1,W2) getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0);
 getXKWithW1AndW2 = @(W1,W2) getXK2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0);
 
+
+%%
 err = 1E20;
 WAns = 0;
 f = waitbar(0,'W...');
 
 
 
-for W = 9E-4%1E-5:1E-5:1E-3
+for W = [0.001^2,0.01^2, 0.02^2,0.03^2,0.05^2, 0.1^2 ,1^2 ] %[1E-5:1E-5:1E-3] %9E-4%
     waitbar(W,f,sprintf("current best: %.3f^2",WAns));
     [x,K_list] = getXKWithW(W^2);
     poserr = x([1,3],:) - xTrue;
@@ -72,10 +74,14 @@ for W = 9E-4%1E-5:1E-5:1E-3
     figure;
     for i=1:4
         for j=1:2
-            subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));title(sprintf("K(%d,%d), W=%f^2",i,j,sqrt(W)));
+            subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));title(sprintf("K(%d,%d), W=%.3f^2",i,j,sqrt(W)));
         end
     end
+    sgtitle('4(a) Kalman Gain');
+    figure;hold on; title(sprintf("4(a) Trajectory W=%.3f^2",sqrt(W)));
+    plot(x(3,:),x(1,:)); plot(xTrue(2,:),xTrue(1,:));
 end
+fprintf("4(a) best Answer %f \n",WAns);
 
 
 close(f)
@@ -94,11 +100,11 @@ W2Ans = 0;
 err2 = 1E20;
 
 % best(W1, W2): (5.18, 2.67) * 1E-4
-for W1 = 5.17*1E-4:1E-6:5.19*1E-4
+for W1 = [0.00001^2, 0.0228^2, 0.05^2, 0.1^2   ]%5.17*1E-4:1E-6:5.19*1E-4
     
     waitbar(W1*1000/2,g,sprintf("current best: %f,%f",W1Ans,W2Ans));
     
-    for W2 = 2.6*1E-4:1E-5:2.8*1E-4
+    for W2 =[0.001^2, 0.0163^2, 0.05^2, 0.1^2]  % 2.6*1E-4:1E-5:2.8*1E-4
         
         [x2,K_list] = getXKWithW1AndW2(W1^2,W2^2);
         poserr2 = x2([1,3],:) - xTrue;
@@ -109,16 +115,20 @@ for W1 = 5.17*1E-4:1E-6:5.19*1E-4
             W1Ans = W1;
             W2Ans = W2;
         end
-        
         figure;
         for i=1:4
             for j=1:2
-                subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));  title(sprintf("K(%d,%d), W1=%.2e^2 W2=%.2e^2",i,j,sqrt(W1),sqrt(W2)));
+                subplot(4,2,(i-1)*2+j);plot(t(2:end),K_list(:,i,j));title(sprintf("K(%d,%d), W1=%.3f^2 W2=%.3f^2",i,j,sqrt(W1),sqrt(W2)));
             end
         end
+        sgtitle('4(b) Kalman Gain');
+        figure;hold on; title(sprintf("4(b) Trajectory W1=%.5f^2 W2=%.5f^2",sqrt(W1),sqrt(W2)));
+        plot(x(3,:),x(1,:)); plot(xTrue(2,:),xTrue(1,:));
         
     end
 end
+
+fprintf("4(b) best Answer W1=%f W2=%f \n",W1Ans,W2Ans);
 
 close(g)
 function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
