@@ -57,7 +57,7 @@ function [x,t,z] = truetraj(seed)
         % to get a perfect circle trajectory
         omega = v / R0;
         
-        theta = theta + omega * dt;
+        theta = theta - omega * dt;
         
         % and update the pos
         x(:,ind) = Origin + R0 * [cos(theta);sin(theta)];
