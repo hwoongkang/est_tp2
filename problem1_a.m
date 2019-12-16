@@ -25,7 +25,8 @@ end
 x_est=zeros(2,N);
 for i=1:N
     x_est_temp=x_est_temp0;
-    k=1;
+%     x_est_temp=estXfromZ(Zmea(:,i));
+    k=0;
     while(true)
         
         Z_est=h(x_est_temp);
@@ -35,6 +36,7 @@ for i=1:N
         P=inv(invM+H_est'*inv(V)*H_est);
         GRD=invM*(x_est_temp-x_mean)-H_est'*inv(V)*(Zmea(:,i)-Z_est);
         if(norm(GRD)<0.0000000001)
+            k
             break;
         end
         x_est_temp=x_est_temp-P*GRD;
@@ -61,7 +63,8 @@ end
 x_est=zeros(2,N);
 for i=1:N
     x_est_temp=x_est_temp0;
-    k=1;
+%     x_est_temp=estXfromZ(Zmea(:,i));
+    k=0;
     while(true)
         
         Z_est=h(x_est_temp);
@@ -71,6 +74,7 @@ for i=1:N
         P=inv(invM+H_est'*inv(V)*H_est);
         GRD=invM*(x_est_temp-x_mean)-H_est'*inv(V)*(Zmea(:,i)-Z_est);
         if(norm(GRD)<0.0000000001)
+            k
             break;
         end
         x_est_temp=x_est_temp-P*GRD;
@@ -98,7 +102,8 @@ end
 x_est=zeros(2,N);
 for i=1:N
     x_est_temp=x_est_temp0;
-    k=1;
+%     x_est_temp=estXfromZ(Zmea(:,i));
+    k=0;
     while(true)
         
         Z_est=h(x_est_temp);
@@ -108,6 +113,7 @@ for i=1:N
         P=inv(invM+H_est'*inv(V)*H_est);
         GRD=invM*(x_est_temp-x_mean)-H_est'*inv(V)*(Zmea(:,i)-Z_est);
         if(norm(GRD)<0.0000000001)
+            k
             break;
         end
         x_est_temp=x_est_temp-P*GRD;
