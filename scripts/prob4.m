@@ -74,42 +74,24 @@ W1Ans = 0;
 W2Ans = 0;
 err2 = 1E20;
 
-out = zeros(2,10000);
-parfor ww = 1:10000
-    W2 = (rem(ww,100))/100; % 0.1:0.1:1
-    W1 = ceil(ww/100)/100;
-    out(:,ww) = [W1;W2];
+% best(W1, W2): (5.18, 2.67) * 1E-4
+for W1 = 5.17*1E-4:1E-7:5.19*1E-4
     
-    x2 = getXWithW1AndW2(W1^2,W2^2);
-    poserr2 = x2([1,3],:) - xTrue;
-    errnow = trace(poserr2.' * poserr2)/length(x2);
-    if errnow<err2
-        bextXWithW1AndW2 = x2;
-        err = errnow;
-        W1Ans = W1;
-        W2Ans = W2;
-    end
+    waitbar(W1*1000/2,g,sprintf("current best: %f,%f",W1Ans,W2Ans));
     
-end
-return
-parfor W1temp = 1:100
-    W1 = W1temp/100;
-    waitbar(W1,g,"");
-    
-    for W2 = 1E-2:1E-2:1
+    for W2 = 2.6*1E-4:1E-6:2.8*1E-4
         
         x2 = getXWithW1AndW2(W1^2,W2^2);
         poserr2 = x2([1,3],:) - xTrue;
         errnow = trace(poserr2.' * poserr2)/length(x2);
         if errnow<err2
             bextXWithW1AndW2 = x2;
-            err = errnow;
+            err2 = errnow;
             W1Ans = W1;
             W2Ans = W2;
         end
     end
 end
-
 
 close(g)
 function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
