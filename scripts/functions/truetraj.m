@@ -1,6 +1,6 @@
 %% function to provide the true traj and measurements
 
-function [x,t,z] = truetraj(seed)
+function [x,t,z,vTrue] = truetraj(seed)
     if nargin<1
         seed = 1;
     end
@@ -36,6 +36,9 @@ function [x,t,z] = truetraj(seed)
     % allocation
     x = zeros(2,length(t));
     z = zeros(size(x));
+    
+    vTrue = zeros(2,length(t));
+    
     % variable to hold the vel
     v = V0;
     
@@ -43,6 +46,7 @@ function [x,t,z] = truetraj(seed)
     theta = THETA0;
     
     x(:,1) = x0;
+    v(:,1) = v;
     z(:,1) = h(x0) + nu *randn(2,1);
     %% true traj 
     % iteration!
