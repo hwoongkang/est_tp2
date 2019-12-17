@@ -43,7 +43,7 @@ x0 = x(:,1);
 P0 = zeros(4);
 
 P0([1,3],[1,3]) = P0pos;
-P0([2,4],[2,4]) = 1E4 * eye(2);
+P0([2,4],[2,4]) = 1E10 * eye(2);
 
 P = zeros(4,4,length(xTrue));
 P(:,:,1) = P0;
@@ -52,7 +52,7 @@ M = zeros(4,4,length(xTrue));
 
 %% function handles
 % for (a) -> disturbability improved
-getXWithW = @(W) getX(Ad,Qd + 0E-5*randn(4),W,R,xTrue,z,x0,P0);
+getXWithW = @(W) getX(Ad,Qd + 3E-5*randn(4),W,R,xTrue,z,x0,P0);
 % for (b)
 getXWithW1AndW2 = @(W1,W2) getX2(A,Qd,W1,W2,R,xTrue,z,x0,P0);
 
