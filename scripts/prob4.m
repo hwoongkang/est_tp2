@@ -11,15 +11,21 @@ A = [0,1,0,0;
 
 % continuous Gamma Matrix (with Q_c = W)
 gamma = [0;1;0;1];
+gamma2 = [0,0;1,0;0,0;0,1];
 
 % Gamma * W * Gamma^T
 Q = gamma * gamma.';
-
+Q2 = gamma2 * gamma2.';
 % Van Loan's Discretization
 C = expm([-A,Q;zeros(4), A.']);
+C2 = expm([-A,Q;zeros(4),A.']);
 
 Ad = C(5:8,5:8).';
+Ad2 = C2(5:8,5:8).';
+
 Qd = Ad * C(1:4,5:8);
+Qd2 = Ad2 * C2(1:4,5:8);
+
 %% part (a)
 [xTrue,t,z]= truetraj();
 
@@ -46,9 +52,9 @@ M = zeros(4,4,length(xTrue));
 
 %% function handles
 % for (a) -> disturbability improved
-getXWithW = @(W) getX(Ad,Qd + 3E-5*randn(4),W,R,xTrue,z,x0,P0);
+getXWithW = @(W) getX(Ad,Qd + 0E-5*randn(4),W,R,xTrue,z,x0,P0);
 % for (b)
-getXWithW1AndW2 = @(W1,W2) getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0);
+getXWithW1AndW2 = @(W1,W2) getX2(A,Qd,W1,W2,R,xTrue,z,x0,P0);
 
 % initial error var
 err = 1E20;
@@ -90,8 +96,8 @@ W1Ans = 0;
 W2Ans = 0;
 err2 = 1E20;
 
-% best(W1, W2): (5.18, 2.67) * 1E-4
-for W1 = 5.18E-4 %5.17*1E-4:1E-7:5.19*1E-4
+% best(W1, W2): (5.175, 2.67) * 1E-4
+for W1 = 5.17*1E-4:1E-7:5.19*1E-4
     
     waitbar(W1*1000/2,g,sprintf("current best: %f,%f",W1Ans,W2Ans));
     
@@ -153,11 +159,15 @@ function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
     end
 end
 
-function x = getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0)
+function x = getX2(A,Qd,W1,W2,R,xTrue,z,x0,P0)
+    % van loan again
+    gamma = [0,0;1,0;0,0;0,1];
+    W = [W1,0;0,W2];
+    C = expm([-A,gamma * W * gamma.';zeros(4),A.']);
+    Ad = C(5:8,5:8).';
+    Qd = Ad * C(1:4,5:8);
     % tuning parameter
-    Qd = zeros(4);
-    Qd(2,2) = W1;
-    Qd(4,4) = W2;
+    
     x = zeros(4,length(xTrue));
     x(:,1) = x0;
     P = zeros(4,4,length(xTrue));
