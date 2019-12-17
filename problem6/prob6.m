@@ -26,11 +26,11 @@ R = diag([DEG2RAD, DEG2RAD].^2);
 [x0pos,P0pos]=NewtonRhapson([10;10],zeros(2),z(:,1),R);
 
 %% state 10 น่, covariance 10น่
-x0pos_10 = xTrue(:,1) + 10*(x0pos - xTrue(:,1));
+x0pos_10 = xTrue(:,1) + 1000*(x0pos - xTrue(:,1));
 x([1,3],1) = x0pos_10;
 x([2,4],1) = [0;0];
 x0 = x(:,1);
-P0pos_10 = P0pos * 10^2;
+P0pos_10 = P0pos * 1000^2;
 P0 = zeros(4);
 P0([1,3],[1,3]) = P0pos_10;
 P0([2,4],[2,4]) = 1E4 * eye(2);
@@ -80,19 +80,21 @@ figure
 plot(bestX2(3,:),bestX2(1,:),'.k')
 hold on
 plot(xTrue(2,:),xTrue(1,:),'--r')
-title(sprintf("(b) best result with W1 = %.3e, W2 = %.3e",W1Ans,W2Ans))
+title("Result with 10,100 times of X0,P0")
 axis equal
 
 figure()
 subplot(2,1,1); plot(t,poserr2(1,:),'k'); title('Error of position_x'); xlabel('time(s)'); ylabel('error(km)'); grid on;
 subplot(2,1,2); plot(t,poserr2(2,:),'k'); title('Error of position_y'); xlabel('time(s)'); ylabel('error(km)'); grid on;
-sgtitle('position error');
+sgtitle('Position error');
 
 figure()
 titleh = ["K_{11}","K_{12}","K_{21}","K_{22}","K_{31}","K_{32}","K_{41}","K_{42}"];
-for i = 1:8
-    tmpmat = reshape(K_plot(1,1,:),1,4065);
-    subplot(4,2,i); plot(t(50:end),tmpmat(50:end)); title(titleh(i)); xalbel('time(s)'); ylabel('gain'); grid on;
+for i = 1:4
+    for j = 1:2
+        tmpmat = reshape(K_plot(i,j,:),1,4065);
+        subplot(4,2,2*(i-1)+j); plot(t(50:end),tmpmat(50:end),'r'); title(titleh(2*(i-1)+j)); xlabel('time(s)'); ylabel('gain'); grid on;
+    end
 end
 sgtitle('Kalman gain(from 50seconds)');
 
