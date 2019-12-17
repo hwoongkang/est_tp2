@@ -94,7 +94,7 @@ end
 
 %% plot
 time_resize = zeros(1,size(time,2)*2);
-meas_resize = zeros(2,size(time,2)*2);
+true_resize = zeros(2,size(time,2)*2);
 k = 0;
 for i = 1:size(time,2)*2
    if mod(i,2) == 1
@@ -103,7 +103,7 @@ for i = 1:size(time,2)*2
       value2 = meas(2,k);
    end
    time_resize(1,i) = value;
-   meas_resize(:,i) = value2;
+   true_resize(:,i) = value2;
 end
 figure()
 plot(x_est_plot(2,:),x_est_plot(1,:),'bo','Linewidth',0.5);
@@ -123,13 +123,14 @@ sgtitle('Kalman gain');
 figure()
 titleh = ["P_11","P_22"];
 for i =1:2
-   subplot(2,1,i);  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
+   subplot(2,1,i); plot(time_resize,x_est_plot-true_resize,'r'); hold on; plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
    legend('error','covariance');
    title(titleh(i));
 end
 sgtitle('Covariance');
 figure()
 plot(time,meas_residual);
+
 title('Measurement residual(optional)');
 ylabel('rad'); xlabel('time(sec)');
 
@@ -245,7 +246,7 @@ sgtitle('Kalman gain');
 figure()
 titleh = ["P_11","P_22"];
 for i =1:2
-   subplot(2,1,i);  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
+   subplot(2,1,i);  plot(time_resize,x_est_plot-true_resize,'r'); hold on;  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
    legend('error','covariance');
    title(titleh(i));
 end
