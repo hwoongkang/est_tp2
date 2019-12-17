@@ -77,6 +77,8 @@ close(f)
 bestX = bestXWithW;
 figure
 plot(bestX(3,:),bestX(1,:),'.k')
+hold on
+plot(xTrue(2,:),xTrue(1,:),'--r')
 title(sprintf("best result with W = %.2e",WAns))
 axis equal
 
@@ -114,6 +116,8 @@ bestX2 = bextXWithW1AndW2;
 
 figure
 plot(bestX2(3,:),bestX2(1,:),'.k')
+hold on
+plot(xTrue(2,:),xTrue(1,:),'--r')
 title(sprintf("(b) best result with W1 = %.3e, W2 = %.3e",W1Ans,W2Ans))
 axis equal
 
