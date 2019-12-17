@@ -14,7 +14,7 @@ invM=diag([0^2,0^2]);
 
 %%
 [x_true,t,z] = truetraj();
-N=length(x_true);
+N=1000;%length(x_true);
 
 
 figure(1);
@@ -53,14 +53,14 @@ for i=1:N
     figure(1); hold on;
 %     f1=scatter(x_est_temp(2),x_est_temp(1),'b');hold on;
 %     f2=plot(x_true(2,1),x_true(1,1),'r*');
-%     f3=plot(eli(2,:),eli(1,:),'b');
+    f3=plot(eli(2,:),eli(1,:),'b');
     
 end
 
 f4=plot(waypoint_total(2,1),waypoint_total(1,1),'k^');
 f5=plot(waypoint_total(2,:),waypoint_total(1,:),'k');
-legend([f1,f4,f5],'true','start','est','Location','Best');xlabel('y(km)');ylabel('x(km)');
-title('2(a) Newton Rhapson');
+legend([f1,f3,f4,f5],'true','3\sigma','start','est','Location','Best');xlabel('y(km)');ylabel('x(km)');
+title('2(a) Newton Raphson');
 axis equal
 
 
@@ -75,4 +75,4 @@ subplot(2,1,2);
 plot(abs(x_error(2,:)));hold on;
 plot(3*sqrt(cov_list(2,:)));
 xlabel('sec');ylabel('km');
-sgtitle('2(b) Newton Rhapson');
+sgtitle('2(b) Newton Raphson');

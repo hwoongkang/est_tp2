@@ -61,10 +61,13 @@ for j = 1:size(w,2)
 end
 close(f);
 [value, index] = min(error_plot);
-W = w(index)^2;                                                 % rmse가  최소가 되는 w 선정
+W_1 = w(index)^2;                                                 % rmse가  최소가 되는 w 선정
 figure();
 plot(w.^2,error_plot); ylabel('RMSE(km)'); xlabel('W1');
+titterton = sprintf("%s%s",'Minimum RMSE at W = ',num2str(W_1,'%.6f'));
+title(titterton);
 %% for Plot
+W=W_1;
 x_est_plot = zeros(2,size(time,2)*2);
 K_plot = zeros(4,size(time,2));
 M_plot = zeros(2,size(time,2)*2);
@@ -92,19 +95,19 @@ end
 
 %% plot
 time_resize = zeros(1,size(time,2)*2);
-meas_resize = zeros(2,size(time,2)*2);
+true_resize = zeros(2,size(time,2)*2);
 k = 0;
 for i = 1:size(time,2)*2
    if mod(i,2) == 1
       k=k+1;
       value = time(1,k); 
-      value2 = meas(2,k);
+      value2 = true(:,k);
    end
    time_resize(1,i) = value;
-   meas_resize(:,i) = value2;
+   true_resize(:,i) = value2;
 end
 figure()
-plot(x_est_plot(2,:),x_est_plot(1,:),'bo','Linewidth',0.5);
+plot(x_est_plot(2,:),x_est_plot(1,:),'b','Linewidth',0.5);
 hold on;
 plot(true(2,:),true(1,:),'k');
 title('Trajectory'); grid on; xlabel('time(sec)'); ylabel('position(m)');
@@ -119,15 +122,16 @@ for i = 1:4
 end
 sgtitle('Kalman gain');
 figure()
-titleh = ["P_11","P_22"];
+titleh = ["P_{11}","P_{22}"];
 for i =1:2
-   subplot(2,1,i);  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
-   legend('error','covariance');
+   subplot(2,1,i); plot(time_resize,x_est_plot(i,:)-true_resize(i,:),'r'); hold on; plot(time_resize,3*sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,3*-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
+   legend('error','covariance(3\sigma)');
    title(titleh(i));
 end
 sgtitle('Covariance');
 figure()
 plot(time,meas_residual);
+
 title('Measurement residual(optional)');
 ylabel('rad'); xlabel('time(sec)');
 
@@ -179,6 +183,7 @@ for ind_tmp = 1:size(w1,2)
        Z(ind_tmp,ind_tmp2) = error_plot2(size(w1,2)*(ind_tmp-1)+ind_tmp2);
     end
 end
+
 surf(X,Y,Z);
 xlabel('W1');
 ylabel('W2');
@@ -194,8 +199,13 @@ if j==0
 end
 W1 = w1(k)^2;
 W2 = w2(j)^2;
+hwang = sprintf('%s%s%s%s','Minimum RMSE at W1= ',num2str(W1),' and W2=',num2str(W2));
+title(hwang);
 W = [W1 0; 0 W2];
 %% for Plot
+W1=0.0098278^2;
+W2=0.0098278^2;
+W = [W1 0; 0 W2];
 x_est_plot = zeros(2,size(time,2)*2);
 K_plot = zeros(4,size(time,2));
 M_plot = zeros(2,size(time,2)*2);
@@ -222,7 +232,7 @@ end
 
 %% Plot
 figure()
-plot(x_est_plot(2,:),x_est_plot(1,:),'bo','Linewidth',0.5);
+plot(x_est_plot(2,:),x_est_plot(1,:),'b','Linewidth',0.5);
 hold on;
 plot(true(2,:),true(1,:),'k');
 title('trajectory'); grid on; xlabel('time(sec)'); ylabel('position(m)');
@@ -240,8 +250,8 @@ sgtitle('Kalman gain');
 figure()
 titleh = ["P_11","P_22"];
 for i =1:2
-   subplot(2,1,i);  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
-   legend('error','covariance');
+   subplot(2,1,i);  plot(time_resize,x_est_plot(i,:)-true_resize(i,:),'r'); hold on;  plot(time_resize,3*sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,3*-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
+   legend('error','covariance(3\sigma)');
    title(titleh(i));
 end
 sgtitle('Covariance');

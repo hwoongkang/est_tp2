@@ -3,7 +3,7 @@ clear;
 close all;
 addpath('functions_p1');
 
-N=1;
+N=3;
 
 % measuremebt noise
 V=diag([1,1]*DEG2RAD).^2;
@@ -40,3 +40,6 @@ for i=1:N
     legend('est','true','3\sigma','Newton-Rhapson','Location','Best');
     xlabel('y(km)');ylabel('x(km)');
 end
+
+
+

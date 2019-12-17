@@ -64,7 +64,7 @@ f = waitbar(0,'W...');
 
 
 
-for W = [0.001^2,0.01^2, 0.02^2,0.03^2,0.05^2, 0.1^2 ,1^2 ] %[1E-5:1E-5:1E-3] %9E-4%
+for W = [0.0001^2, 0.03^2, 0.1^2 ]%[0.001^2,0.01^2, 0.02^2,0.03^2,0.05^2, 0.1^2 ,1^2 ] %[1E-5:1E-5:1E-3] %9E-4%
     waitbar(W,f,sprintf("current best: %.3f^2",WAns));
     [x,K_list,P,r] = getXKPrWithW(W^2);
     poserr = x([1,3],:) - xTrue;
@@ -95,7 +95,7 @@ for W = [0.001^2,0.01^2, 0.02^2,0.03^2,0.05^2, 0.1^2 ,1^2 ] %[1E-5:1E-5:1E-3] %9
     end
     figure; sgtitle(sprintf("5(a) Residual W=%.3f^2",sqrt(W)));
     for i=1:2
-        subplot(2,1,i); hold on; plot(r(i,:),'k');
+        subplot(2,1,i); hold on; plot(abs(r(i,:)),'k');
     end
     
  end
@@ -118,11 +118,11 @@ W2Ans = 0;
 err2 = 1E20;
 
 % best(W1, W2): (5.18, 2.67) * 1E-4
-for W1 = [0.00001^2, 0.0228^2, 0.05^2, 0.1^2   ]%5.17*1E-4:1E-6:5.19*1E-4
+for W1 = [0.001^2, 0.0228^2 1]%[0.00001^2, 0.0228^2, 0.05^2, 0.1^2   ]%5.17*1E-4:1E-6:5.19*1E-4
     
     waitbar(W1*1000/2,g,sprintf("current best: %f,%f",W1Ans,W2Ans));
     
-    for W2 =[0.001^2, 0.0163^2, 0.05^2, 0.1^2]  % 2.6*1E-4:1E-5:2.8*1E-4
+    for W2 =[0.001^2, 0.0163^2 1]%[0.001^2, 0.0163^2, 0.05^2, 0.1^2]  % 2.6*1E-4:1E-5:2.8*1E-4
         
         [x2,K_list,P,r] = getXKPrWithW1AndW2(W1^2,W2^2);
         poserr2 = x2([1,3],:) - xTrue;
@@ -155,7 +155,7 @@ for W1 = [0.00001^2, 0.0228^2, 0.05^2, 0.1^2   ]%5.17*1E-4:1E-6:5.19*1E-4
         
         figure; sgtitle(sprintf("5(b) Residual W1=%.5f^2 W2=%.5f^2",sqrt(W1),sqrt(W2)));
         for i=1:2
-            subplot(2,1,i); hold on; plot(r(i,:),'k');
+            subplot(2,1,i); hold on; plot(abs(r(i,:)),'k');
         end
         
     end

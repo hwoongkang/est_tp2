@@ -3,7 +3,7 @@ clear;
 close all;
 addpath('functions_p1');
 
-N=10;
+N=50;
 
 % measuremebt noise
 V=diag([1,1]*DEG2RAD).^2;
@@ -51,8 +51,8 @@ for i=1:N
 end
 f4=plot(waypoint_total(2,1),waypoint_total(1,1),'k^');
 f5=plot(waypoint_total(2,:),waypoint_total(1,:),'k');
-legend([f1,f2,f3,f4,f5],'est','true','3\sigma','start','Newton Rhapson','Location','Best');xlabel('y(km)');ylabel('x(km)');
-title('1(a) Newton Rhapson');
+legend([f1,f2,f3,f4,f5],'est','true','3\sigma','start','Newton Raphson','Location','Best');xlabel('y(km)');ylabel('x(km)');
+title('1(a) Newton Raphson');
 axis equal
 
 figure(2);

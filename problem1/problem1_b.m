@@ -29,8 +29,11 @@ x_error=zeros(2,N-1);
 cov_list=zeros(2,N-1);
 
 
-x_est_temp=x_est_after_NR;
-P=M_after_NR;
+% x_est_temp=x_est_after_NR;
+% P=M_after_NR;
+x_est_temp=[10;10];%x_est_after_NR;
+P=[100000000000000 0;0 10000000000000];
+
 
 waypoint=x_est_temp;
 for i=1:N-1
