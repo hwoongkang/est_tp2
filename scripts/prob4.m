@@ -44,31 +44,44 @@ P(:,:,1) = P0;
 
 M = zeros(4,4,length(xTrue));
 
-getXWithW = @(W) getX(Ad,Qd,W,R,xTrue,z,x0,P0);
+%% function handles
+% for (a) -> disturbability improved
+getXWithW = @(W) getX(Ad,Qd + 0.0001*randn(4),W,R,xTrue,z,x0,P0);
+% for (b)
 getXWithW1AndW2 = @(W1,W2) getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0);
 
+% initial error var
 err = 1E20;
 WAns = 0;
+
+
 f = waitbar(0,'W...');
-
-
-
 for W = 8.9E-4:1E-6:9.1E-4%1E-5:1E-5:1E-3
     waitbar(W,f,sprintf("current best: %.3f^2",WAns));
+    % get X
     x = getXWithW(W^2);
+    % position mean square error
     poserr = x([1,3],:) - xTrue;
     errnow = trace(poserr.' * poserr) / length(x);
+    
+    % replace optimal
     if errnow<err
         err = errnow;
         WAns = W;
         bestXWithW = x;
     end
 end
-WAns
 close(f)
 
-x = getXWithW1AndW2(0.00025^2,0.0002^2);
+% plotting
+bestX = bestXWithW;
+figure
+plot(bestX(3,:),bestX(1,:),'.k')
+title(sprintf("best result with W = %.2e",WAns))
+axis equal
 
+
+%% (b)
 g = waitbar(0,'W1&W2...');
 
 W1Ans = 0;
@@ -76,12 +89,13 @@ W2Ans = 0;
 err2 = 1E20;
 
 % best(W1, W2): (5.18, 2.67) * 1E-4
-for W1 = 5.17*1E-4:1E-7:5.19*1E-4
+for W1 = 5.18E-4 %5.17*1E-4:1E-7:5.19*1E-4
     
     waitbar(W1*1000/2,g,sprintf("current best: %f,%f",W1Ans,W2Ans));
     
-    for W2 = 2.6*1E-4:1E-6:2.8*1E-4
+    for W2 = 2.67E-4 %2.6*1E-4:1E-6:2.8*1E-4
         
+        % mean square error
         x2 = getXWithW1AndW2(W1^2,W2^2);
         poserr2 = x2([1,3],:) - xTrue;
         errnow = trace(poserr2.' * poserr2)/length(x2);
@@ -97,7 +111,11 @@ end
 close(g)
 
 return
+
+
+%% functions
 function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
+    Qd
     % tuning parameter
     Qd = W*Qd;
     x = zeros(4,length(xTrue));
