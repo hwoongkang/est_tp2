@@ -100,7 +100,7 @@ for i = 1:size(time,2)*2
    if mod(i,2) == 1
       k=k+1;
       value = time(1,k); 
-      value2 = true(2,k);
+      value2 = true(:,k);
    end
    time_resize(1,i) = value;
    true_resize(:,i) = value2;
@@ -246,7 +246,7 @@ sgtitle('Kalman gain');
 figure()
 titleh = ["P_11","P_22"];
 for i =1:2
-   subplot(2,1,i);  plot(time_resize,x_est_plot(i,:)-true_resize(i,:),'r'); hold on;  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
+   subplot(2,1,i);  plot(time_resize,x_est_plot(i,:)-true_resize(i,:),'r'); hold on;  plot(time_resize,3*sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,3*-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
    legend('error','covariance(3\sigma)');
    title(titleh(i));
 end
