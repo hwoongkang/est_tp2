@@ -31,7 +31,7 @@ F = eye(2) + A*Ts;      % Discretized System Matrix
 
 
 G = [1;1];              % Noise modelling
-w = 0:0.001:0.01;
+w = 0.002:0.0001:0.01;
 d2r = pi/180;
 V = [1 0;0 1] * d2r * d2r;
 
@@ -62,7 +62,8 @@ end
 close(f);
 [value, index] = min(error_plot);
 W = w(index)^2;                                                 % rmse가  최소가 되는 w 선정
-
+figure();
+plot(w.^2,error_plot); ylabel('RMSE(km)'); xlabel('W1');
 %% for Plot
 x_est_plot = zeros(2,size(time,2)*2);
 K_plot = zeros(4,size(time,2));
@@ -135,8 +136,8 @@ A = [0 0; 0 0];         % Continuous System Matrix
 Ts = 1;                 % Sampling Time
 F = eye(2) + A*Ts;      % Discretized System Matrix
 G = [1 0;0 1];
-w1 = 0:0.002:0.1;
-w2 = 0:0.002:0.1;
+w1 = 0.04:0.005:0.1;     % trial-error 로 이쁜구간 찾음
+w2 = 0.04:0.005:0.1;     % trial-error 로 이쁜구간 찾음
 d2r = pi/180;
 V = [1 0;0 1] * d2r * d2r;
 
@@ -144,8 +145,9 @@ V = [1 0;0 1] * d2r * d2r;
 
 %% compare monte
 f = waitbar(0,'processing');
-error_plot = zeros(1,size(W,2));
+error_plot2 = zeros(1,size(W,2));
 x_est_plot = zeros(2,size(time,2));
+Z = ones(size(w1,2),size(w2,2));
 for k = 1:size(w1,2)
     W1 = w1(k)^2;
     for j = 1:size(w2,2)
@@ -165,14 +167,31 @@ for k = 1:size(w1,2)
             x_est_plot(:,i) = x_bar;
         end
         rootmeansq = rms(x_est_plot-true,2);
-        error_plot(:,size(w1,2)*(k-1)+j) = sqrt(rootmeansq(1)^2 + rootmeansq(2)^2);
+        error_plot2(:,size(w1,2)*(k-1)+j) = sqrt(rootmeansq(1)^2 + rootmeansq(2)^2);
         waitbar((size(w1,2)*(k-1)+j)/(size(w1,2)*size(w2,2)),f,'prob 3-(b). finding w1 and w2...');
     end
 end
 close(f)
-[value, index] = min(error_plot);
+figure()
+[X,Y] = meshgrid(w1.^2,w2.^2);
+for ind_tmp = 1:size(w1,2)
+    for ind_tmp2 = 1:size(w2,2)
+       Z(ind_tmp,ind_tmp2) = error_plot2(size(w1,2)*(ind_tmp-1)+ind_tmp2);
+    end
+end
+surf(X,Y,Z);
+xlabel('W1');
+ylabel('W2');
+zlabel('RMSE(km)');
+[value, index] = min(error_plot2);
 k = floor(index/size(w1,2)) + 1;
-j = mod(index,size(w1,2)) + 1;
+if k==size(w1,2)+1
+   k = size(w1,w); 
+end
+j = mod(index,size(w1,2));
+if j==0
+   j = 8; 
+end
 W1 = w1(k)^2;
 W2 = w2(j)^2;
 W = [W1 0; 0 W2];
