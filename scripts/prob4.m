@@ -46,7 +46,7 @@ M = zeros(4,4,length(xTrue));
 
 %% function handles
 % for (a) -> disturbability improved
-getXWithW = @(W) getX(Ad,Qd + 0.0001*randn(4),W,R,xTrue,z,x0,P0);
+getXWithW = @(W) getX(Ad,Qd + 3E-5*randn(4),W,R,xTrue,z,x0,P0);
 % for (b)
 getXWithW1AndW2 = @(W1,W2) getX2(Ad,Qd,W1,W2,R,xTrue,z,x0,P0);
 
@@ -110,12 +110,19 @@ end
 
 close(g)
 
+bestX2 = bextXWithW1AndW2;
+
+figure
+plot(bestX2(3,:),bestX2(1,:),'.k')
+title(sprintf("(b) best result with W1 = %.3e, W2 = %.3e",W1Ans,W2Ans))
+axis equal
+
 return
 
 
 %% functions
 function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
-    Qd
+    %Qd
     % tuning parameter
     Qd = W*Qd;
     x = zeros(4,length(xTrue));
