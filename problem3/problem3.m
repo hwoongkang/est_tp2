@@ -100,7 +100,7 @@ for i = 1:size(time,2)*2
    if mod(i,2) == 1
       k=k+1;
       value = time(1,k); 
-      value2 = meas(2,k);
+      value2 = true(2,k);
    end
    time_resize(1,i) = value;
    true_resize(:,i) = value2;
