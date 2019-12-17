@@ -30,7 +30,7 @@ R = diag([DEG2RAD, DEG2RAD].^2);
 % allocation
 x = zeros(4,length(xTrue));
 x([1,3],1) = x0pos;
-x([2,4],1) = [50/3600;0];
+x([2,4],1) = [0;0];
 
 x0 = x(:,1);
 
@@ -53,7 +53,7 @@ f = waitbar(0,'W...');
 
 
 
-for W = 9E-4%1E-5:1E-5:1E-3
+for W = 8.9E-4:1E-6:9.1E-4%1E-5:1E-5:1E-3
     waitbar(W,f,sprintf("current best: %.3f^2",WAns));
     x = getXWithW(W^2);
     poserr = x([1,3],:) - xTrue;
@@ -64,8 +64,9 @@ for W = 9E-4%1E-5:1E-5:1E-3
         bestXWithW = x;
     end
 end
-
+WAns
 close(f)
+
 x = getXWithW1AndW2(0.00025^2,0.0002^2);
 
 g = waitbar(0,'W1&W2...');
@@ -94,6 +95,8 @@ for W1 = 5.17*1E-4:1E-7:5.19*1E-4
 end
 
 close(g)
+
+return
 function x = getX(Ad,Qd,W,R,xTrue,z,x0,P0)
     % tuning parameter
     Qd = W*Qd;
