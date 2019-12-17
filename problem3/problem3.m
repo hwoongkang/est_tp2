@@ -121,10 +121,10 @@ for i = 1:4
 end
 sgtitle('Kalman gain');
 figure()
-titleh = ["P_11","P_22"];
+titleh = ["P_{11}","P_{22}"];
 for i =1:2
-   subplot(2,1,i); plot(time_resize,x_est_plot-true_resize,'r'); hold on; plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
-   legend('error','covariance');
+   subplot(2,1,i); plot(time_resize,x_est_plot(i,:)-true_resize(i,:),'r'); hold on; plot(time_resize,3*sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,3*-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
+   legend('error','covariance(3\sigma)');
    title(titleh(i));
 end
 sgtitle('Covariance');
@@ -246,8 +246,8 @@ sgtitle('Kalman gain');
 figure()
 titleh = ["P_11","P_22"];
 for i =1:2
-   subplot(2,1,i);  plot(time_resize,x_est_plot-true_resize,'r'); hold on;  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
-   legend('error','covariance');
+   subplot(2,1,i);  plot(time_resize,x_est_plot(i,:)-true_resize(i,:),'r'); hold on;  plot(time_resize,sqrt(M_plot(i,:)),'k'); hold on; plot(time_resize,-sqrt(M_plot(i,:)),'k'); ylabel('distance(km)');  xlabel('time(sec)'); 
+   legend('error','covariance(3\sigma)');
    title(titleh(i));
 end
 sgtitle('Covariance');
