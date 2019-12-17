@@ -1,6 +1,4 @@
 %% prob 4.
-addpath("functions")
-addpath("../problem1")
 
 %% discretization
 % continuous state matrix
@@ -79,7 +77,7 @@ figure
 plot(bestX(3,:),bestX(1,:),'.k')
 hold on
 plot(xTrue(2,:),xTrue(1,:),'--r')
-title(sprintf("best result with W = %.2e",WAns))
+title(sprintf("(a) best result with W = %.2e",WAns))
 axis equal
 
 
