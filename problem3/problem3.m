@@ -61,9 +61,11 @@ for j = 1:size(w,2)
 end
 close(f);
 [value, index] = min(error_plot);
-W = w(index)^2;                                                 % rmse가  최소가 되는 w 선정
+W_1 = w(index)^2;                                                 % rmse가  최소가 되는 w 선정
 figure();
 plot(w.^2,error_plot); ylabel('RMSE(km)'); xlabel('W1');
+titterton = sprintf("%s%s",'Minimum RMSE at W = ',num2str(W_1,'%.6f'));
+title(titterton);
 %% for Plot
 x_est_plot = zeros(2,size(time,2)*2);
 K_plot = zeros(4,size(time,2));
@@ -179,6 +181,7 @@ for ind_tmp = 1:size(w1,2)
        Z(ind_tmp,ind_tmp2) = error_plot2(size(w1,2)*(ind_tmp-1)+ind_tmp2);
     end
 end
+
 surf(X,Y,Z);
 xlabel('W1');
 ylabel('W2');
@@ -194,6 +197,8 @@ if j==0
 end
 W1 = w1(k)^2;
 W2 = w2(j)^2;
+hwang = sprintf('%s%s%s%s','Minimum RMSE at W1= ',num2str(W1),' and W2=',num2str(W2));
+title(hwang);
 W = [W1 0; 0 W2];
 %% for Plot
 x_est_plot = zeros(2,size(time,2)*2);
