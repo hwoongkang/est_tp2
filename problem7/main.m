@@ -45,14 +45,19 @@ where   Q = E[ww.']
 thus we now have A,G,Q,R,
 but C has to be calculated per every location
 %}
-drawlocus = @(R,Q,title_,todraw) drawlocusmain(xTrue,Ad,R,Q,title_,todraw);
+drawgif = @(R,Q,title_,todraw) drawlocusgif(xTrue,Ad,R,Q,title_,todraw);
+drawmain = @(R,Q,title_) drawlocusmain(xTrue,Ad,R,Q,title_);
+% % % drawgif(R,Q,"R,Q",true)
+% % % drawgif(R, getQ(100*W1,100*W2), "R,100Q",1)
+% % % drawgif(100*R,getQ(W1,W2),"100R, Q",1)
+% % % drawgif(100*R,getQ(100*W1,100*W2),"100R,100Q",1)
 
-drawlocus(R,Q,"R,Q",true)
-drawlocus(R, getQ(100*W1,100*W2), "R,100Q",1)
-drawlocus(100*R,getQ(W1,W2),"100R, Q",1)
-drawlocus(100*R,getQ(100*W1,100*W2),"100R,100Q",1)
+drawmain(R,Q,"R, Q")
+drawmain(R, getQ(100*W1,100*W2), "R, 100Q")
+drawmain(100*R,getQ(W1,W2),"100R, Q")
+drawmain(100*R,getQ(100*W1,100*W2),"100R, 100Q")
 
-function drawlocusmain(xTrue,Ad,R,Q,title_,todraw)
+function drawlocusgif(xTrue,Ad,R,Q,title_,todraw)
     filename = sprintf("%s.gif",strrep(title_,",","_"));
     if nargin<6
         todraw = false;
@@ -61,8 +66,11 @@ function drawlocusmain(xTrue,Ad,R,Q,title_,todraw)
         title_ = "";
     end
     
+    % bigger characters
     fig = figure('DefaultAxesFontSize',20,'DefaultLineLineWidth',1);
+    % set size
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0.2, 0.2, 0.7, 0.5]);
+    
     subplot(1,2,1)
     title("Trajectory")
     plot(xTrue(2,:),xTrue(1,:),'--r');
@@ -70,15 +78,21 @@ function drawlocusmain(xTrue,Ad,R,Q,title_,todraw)
     title("Root locus")
     sgtitle(title_)
     
+    % waitbar
     f = waitbar(0,"root locus");
     
+    % save previous eigenvalues
     savE = zeros(2,8*length(xTrue));
+    % for convenience
     count =-8;
+    % initial work needed
     framecount=1;
     for ind = 2:60:length(xTrue)
+        % 4 eigenvalues, symmetric -> 8 ev's for each iteration
         count = count+8;
         waitbar(ind/length(xTrue),f,"calculating...");
         
+        % draw the whole traj and current location
         subplot(1,2,1)
         hold off
         plot(xTrue(2,:),xTrue(1,:),'--r')
@@ -87,11 +101,13 @@ function drawlocusmain(xTrue,Ad,R,Q,title_,todraw)
         drawnow
         title("Trajectory")
         
+        % calculating the eigenvalues
         HTemp= Jacob_h(xTrue(:,ind));
         H = zeros(2,4);
         H(:,[1,3]) = HTemp;
         [~,~,~,E] = dlqe(Ad,eye(4),H,Q,R);
         
+        % put eigenvalues to the history
         for dim = 1:4
             rea = real(E(dim));
             ima = imag(E(dim));
@@ -103,6 +119,8 @@ function drawlocusmain(xTrue,Ad,R,Q,title_,todraw)
             %drawnow
             %hold on
         end
+        
+        % draw the history of eigenvalues and annotate current ones
         subplot(1,2,2)
         hold off
         plot(savE(1,1:count+8),savE(2,1:count+8),'.k');
@@ -112,22 +130,54 @@ function drawlocusmain(xTrue,Ad,R,Q,title_,todraw)
         drawnow
         
         if todraw
+            % writing gif
             frame = getframe(fig);
             im = frame2im(frame);
             [imind,cm] = rgb2ind(im,256);
             
+            % initial work, 25fps
             if framecount==1
                 imwrite(imind,cm,filename,'gif','Loopcount',inf,'DelayTime',0.04);
+            % after the first frame, 25fps
             else
                 imwrite(imind,cm,filename,'gif','WriteMode','append','DelayTime',0.04);
             end
             framecount = framecount+1;
         end
         
+        % !! no saving process needed!
     end
     
     close(f)
 end
+function drawlocusmain(xTrue,Ad,R,Q,title_)
+    if nargin<5
+        title_ = ""
+    end
+    fig = figure('DefaultAxesFontSize',32,'DefaultLineLineWidth',1);
+    set(gcf, 'Units', 'Normalized', 'OuterPosition', [0.2, 0.2, 0.5, 0.6]);
+    f = waitbar(0,"root locus");
+    for ind = 1:60:length(xTrue)
+        waitbar(ind/length(xTrue),f,"calculating...");
+        HTemp= Jacob_h(xTrue(:,ind));
+        H = zeros(2,4);
+        H(:,[1,3]) = HTemp;
+        [~,~,~,E] = dlqe(Ad,eye(4),H,Q,R);
+        
+        for dim = 1:4
+            rea = real(E(dim));
+            ima = imag(E(dim));
+            plot([rea,-rea],[ima,ima],'ok','MarkerSize',5,'MarkerFaceColor','k')
+            drawnow
+            hold on
+        end
+    end
+    title(title_)
+    grid on
+    saveas(gcf,sprintf("../figures/%s.jpg",strrep(title_,",","_")))
+    close(f)
+end
+
 function Qd = getQ(W1,W2)
     % continuous state matrix
     A = [0,1,0,0;
