@@ -30,8 +30,10 @@ Ts = 1;                 % Sampling Time
 F = eye(2) + A*Ts;      % Discretized System Matrix
 
 
-G = [1;1];              % Noise modelling
-w = 0.002:0.0001:0.01;
+% G = [1;1];              % Noise modelling with no disturbability
+G = [1;1.001];          % disturbability
+
+w = 0.0001;
 d2r = pi/180;
 V = [1 0;0 1] * d2r * d2r;
 
@@ -43,11 +45,15 @@ x_est_plot = zeros(2,size(time,2));
 for j = 1:size(w,2)
     M = P;
     W = w(j)^2;
+    % van loan 
+    C = [-F G*W*G'; zeros(2,2) F'];
+    vanloan = expm(C);
+    W = vanloan([3 4],[3 4])'*vanloan([1 2],[3 4]);
     x_bar = x_est + [10 0]';          % use result of prob1
     for i = 1:size(time,2)
         %% time update
         x_bar = F * x_bar;
-        M = F*M*F' + G*W*G';
+        M = F*M*F' + W;
         
         %% Measurement update
         K = M*Jacob_h(x_bar)'/V;
@@ -76,7 +82,7 @@ x_bar = x_est + [10 0]';
 for i = 1:size(time,2)
     %% time update
     x_bar = F * x_bar;
-    M = F*M*F' + G*W*G';
+    M = F*M*F' + W;
     
     x_est_plot(:,2*i-1) = x_bar;
     M_plot(:,2*i-1) = diag(M);
@@ -110,7 +116,7 @@ plot(x_est_plot(2,:),x_est_plot(1,:),'bo','Linewidth',0.5);
 hold on;
 plot(true(2,:),true(1,:),'k');
 title('Trajectory'); grid on; xlabel('time(sec)'); ylabel('position(m)');
-legendary = sprintf('%s%s','W = ',num2str(W,'%.6f'));
+legendary = sprintf('%s%s','W = ',num2str(W_1,'%.6f'));
 legend(legendary);
 figure()
 titleh = ["K_1","K_2","K_3","K_4"];
