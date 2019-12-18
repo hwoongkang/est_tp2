@@ -1,6 +1,7 @@
 %% prob 4.
 addpath("../scripts/functions")
 addpath("../problem1/functions_p1")
+close all
 
 %% discretization
 % continuous state matrix
@@ -44,24 +45,37 @@ where   Q = E[ww.']
 thus we now have A,G,Q,R,
 but C has to be calculated per every location
 %}
-figure
-f = waitbar(0,"root locus");
-for ind = 1:60:length(xTrue)
-    waitbar(ind/length(xTrue),f,"calculating...");
-    HTemp= Jacob_h(xTrue(:,ind));
-    H = zeros(2,4);
-    H(:,[1,3]) = HTemp;
-    [~,~,~,E] = dlqe(Ad,eye(4),H,Q,R);
-    
-    for dim = 1:4
-        rea = real(E(dim));
-        ima = imag(E(dim));
-        plot([rea,-rea],[ima,ima],'.k')
-        drawnow
-        hold on
+drawlocus = @(R,Q,title_) drawlocusmain(xTrue,Ad,R,Q,title_);
+
+drawlocus(R,Q,"R,Q")
+drawlocus(R, getQ(100*W1,100*W2), "R,100Q")
+drawlocus(100*R,getQ(W1,W2),"100R, Q")
+drawlocus(100*R,getQ(100*W1,100*W2),"100R,100Q")
+
+function drawlocusmain(xTrue,Ad,R,Q,title_)
+    if nargin<5
+        title_ = ""
     end
+    figure
+    f = waitbar(0,"root locus");
+    for ind = 1:30:length(xTrue)
+        waitbar(ind/length(xTrue),f,"calculating...");
+        HTemp= Jacob_h(xTrue(:,ind));
+        H = zeros(2,4);
+        H(:,[1,3]) = HTemp;
+        [~,~,~,E] = dlqe(Ad,eye(4),H,Q,R);
+        
+        for dim = 1:4
+            rea = real(E(dim));
+            ima = imag(E(dim));
+            plot([rea,-rea],[ima,ima],'.k')
+            drawnow
+            hold on
+        end
+    end
+    title(title_)
+    close(f)
 end
-close(f)
 function Qd = getQ(W1,W2)
     % continuous state matrix
     A = [0,1,0,0;

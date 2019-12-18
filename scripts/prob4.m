@@ -138,11 +138,11 @@ W2Ans = 0;
 err2 = 1E20;
 
 % best(W1, W2): (5.175, 2.67) * 1E-4
-for W1 = 1E-2:1E-2:1%5.17*1E-4:1E-7:5.19*1E-4
+for W1 = 1E-1%5.17*1E-4:1E-7:5.19*1E-4
     
     waitbar(W1*1000/2,g,sprintf("current best: %f,%f",W1Ans,W2Ans));
     
-    for W2 = 2E-1%2.67E-4 %2.6*1E-4:1E-6:2.8*1E-4
+    for W2 = 1E-1%2.67E-4 %2.6*1E-4:1E-6:2.8*1E-4
         
         % mean square error
         x2 = getXWithW1AndW2(W1^2,W2^2);
