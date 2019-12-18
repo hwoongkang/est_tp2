@@ -92,7 +92,7 @@ close(f)
 %%
 
 
-x = getXWithW1AndW2(0.00025^2,0.0002^2);
+% x = getXWithW1AndW2(0.00025^2,0.0002^2);
 
 g = waitbar(0,'W1&W2...');
 
@@ -125,7 +125,7 @@ for W1 = [0.001^2, 0.0228^2, 1 (1.36e-5)^2   ]%5.17*1E-4:1E-6:5.19*1E-4
         end
         
         figure;hold on; title(sprintf("4(b) Trajectory W1=%.6f^2 W2=%.6f^2",sqrt(W1),sqrt(W2)));
-        plot(x(3,:),x(1,:)); plot(xTrue(2,:),xTrue(1,:));
+        plot(x2(3,:),x2(1,:)); plot(xTrue(2,:),xTrue(1,:));
         legend('est','true');
     end
 end

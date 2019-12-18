@@ -109,7 +109,7 @@ close(f)
 %% part(b)
 
 
-x = getXWithW1AndW2(0.00025^2,0.0002^2);
+% x = getXWithW1AndW2(0.00025^2,0.0002^2);
 
 g = waitbar(0,'W1&W2...');
 
@@ -126,7 +126,7 @@ for W1 = [0.001^2, 0.0228^2 1]%[0.00001^2, 0.0228^2, 0.05^2, 0.1^2   ]%5.17*1E-4
         
         [x2,K_list,P,r] = getXKPrWithW1AndW2(W1^2,W2^2);
         poserr2 = x2([1,3],:) - xTrue;
-        stateErr= abs(x-stateTrue);
+        stateErr= abs(x2-stateTrue);
         errnow = trace(poserr2.' * poserr2)/length(x2);
         if errnow<err2
             bextXWithW1AndW2 = x2;

@@ -69,7 +69,7 @@ function [x,t,z,vTrue] = truetraj(seed)
         % measurement
         z(:,ind) = h(x(:,ind)) + nu*randn(2,1);
         % if returned
-        if (ind>64*60)&& (theta>2*pi)
+        if (theta>2*pi)
             break
         end
     end
