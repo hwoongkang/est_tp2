@@ -1,6 +1,6 @@
 clear all; close all; clc;
 addpath('../problem1/functions_p1');
-% addpath('functions');
+addpath('functions');
 %% discretization
 % continuous state matrix
 A = [0,1,0,0;
